@@ -1,0 +1,115 @@
+<Window x:Class="RevitElementsExporter.ExportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Export Element Coordinates"
+        Width="520"
+        Height="320"
+        WindowStartupLocation="CenterScreen">
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Themes/Styles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid Margin="18">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <StackPanel>
+      <TextBlock Text="Export all Revit elements to CSV with world coordinates."
+                 FontSize="16"
+                 FontWeight="SemiBold"
+                 Margin="0,0,0,4" />
+      <TextBlock Text="ตั้งค่าที่อยู่ไฟล์ปลายทาง แล้วกด Export เพื่อบันทึกข้อมูล."
+                 Foreground="{StaticResource TextSecondaryBrush}" />
+    </StackPanel>
+
+    <Border Grid.Row="1"
+            Margin="0,16,0,0"
+            Background="{StaticResource PanelBrush}"
+            BorderBrush="{StaticResource BorderBrushLight}"
+            BorderThickness="1"
+            CornerRadius="8"
+            Padding="16"
+            Effect="{DynamicResource DropShadow}">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Format"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Margin="0,0,12,0" />
+        <ComboBox x:Name="FormatCombo"
+                  Grid.Row="0"
+                  Grid.Column="1"
+                  ItemsSource="{Binding}"
+                  SelectedIndex="0"
+                  Margin="0,4,0,12"
+                  VerticalContentAlignment="Center"
+                  ToolTip="เลือกรูปแบบไฟล์ที่ต้องการส่งออก">
+          <ComboBoxItem Content="CSV" />
+          <ComboBoxItem Content="JSON" />
+          <ComboBoxItem Content="Excel (.xlsx)" />
+        </ComboBox>
+
+        <TextBlock Text="File path"
+                   Grid.Row="1"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Margin="0,0,12,0" />
+        <TextBox x:Name="FilePathBox"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 Grid.ColumnSpan="1"
+                 VerticalContentAlignment="Center"
+                 ToolTip="ตำแหน่งไฟล์ปลายทางที่จะส่งออก" />
+        <Button Content="Browse..."
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="12,4,0,12"
+                Padding="12,6"
+                Click="OnBrowseClick" />
+
+        <Separator Grid.Row="2"
+                   Grid.ColumnSpan="3" />
+
+        <TextBlock Grid.Row="3"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="3"
+                   Text="ข้อมูลจะส่งออกเป็นหน่วยเมตร (แปลงจากฟุตของ Revit)."
+                   Foreground="{StaticResource TextSecondaryBrush}" />
+      </Grid>
+    </Border>
+
+    <StackPanel Grid.Row="2"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Margin="0,16,0,0">
+      <Button Content="Cancel"
+              Background="{StaticResource BorderBrushLight}"
+              Foreground="{StaticResource TextPrimaryBrush}"
+              BorderBrush="{StaticResource BorderBrushLight}"
+              Click="OnCancelClick" />
+      <Button Content="Export"
+              Margin="10,0,0,0"
+              Click="OnExportClick" />
+    </StackPanel>
+  </Grid>
+</Window>
