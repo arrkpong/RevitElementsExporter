@@ -1,35 +1,50 @@
 # RevitElementsExporter
 
-Revit add-in that exports all element coordinates to a CSV on the user's Desktop. It handles points and curves, converts Revit internal feet to meters, and writes metadata such as category, family, type, and level.
+Revit add-in (net8.0-windows) that exports all elements with coordinates and basic metadata. A built-in WPF dialog lets you pick output format (CSV, JSON, Excel) and the destination file path. Coordinates are converted from Revit internal feet to meters.
+
+## Features
+- Exports instances (non-types) with: Id, Category, Family, Type, Level, LocationType, XYZ, and Start/End XYZ for curves.
+- Supports three formats: CSV, JSON, Excel (.xlsx via OpenXML).
+- Pure WPF dialog to choose format and file path; default path is `RevitAllElements.csv` on Desktop.
+- Handles unbounded curves by labeling `LocationType` as `Curve-Unbound`.
 
 ## Project Structure
-- `RevitElementsExporter.sln` - Visual Studio solution.
-- `RevitElementsExporter/` - add-in source (`ExportCoordinates.cs`), project file (`RevitElementsExporter.csproj`), and add-in manifest (`.addin`).
-- `bin/`, `obj/` - build outputs (generated).
+- `RevitElementsExporter.sln` – solution file.
+- `RevitElementsExporter/` – add-in source (`ExportCoordinates.cs`, `ExportWindow.xaml`), project (`RevitElementsExporter.csproj`), theme resources (`Themes/`), and add-in manifest (`.addin`).
+- `bin/`, `obj/` – build outputs (generated).
 
-## Prerequisites
+## Requirements
 - .NET 8 SDK.
-- Autodesk Revit 2026 (paths in the project reference `RevitAPI.dll` and `RevitAPIUI.dll` from `C:\Program Files\Autodesk\Revit 2026\`).
-- Windows x64 (project targets `net8.0-windows`, `PlatformTarget` x64).
+- Windows x64.
+- Autodesk Revit 2026; project references `RevitAPI.dll` and `RevitAPIUI.dll` from `C:\Program Files\Autodesk\Revit 2026\`.
 
 ## Build
-Run from the repository root:
-
+From repo root:
 ```powershell
 dotnet build
 ```
-
-This restores packages and compiles the add-in DLL to `RevitElementsExporter/bin/Debug/net8.0-windows/`.
+Output DLL is at `RevitElementsExporter/bin/Debug/net8.0-windows/RevitElementsExporter.dll`.
 
 ## Install / Deploy
-1) Copy `RevitElementsExporter/bin/Debug/net8.0-windows/RevitElementsExporter.dll` to your Revit add-ins folder, typically `%AppData%\Autodesk\Revit\Addins\2026\`.
-2) Copy `RevitElementsExporter/.addin` to the same folder and update the `<Assembly>` path in the manifest if your build output path differs.
-3) Restart Revit.
+1. Copy `RevitElementsExporter/bin/Debug/net8.0-windows/RevitElementsExporter.dll` to `%AppData%\Autodesk\Revit\Addins\2026\` (or your target version folder).
+2. Copy `RevitElementsExporter/.addin` to the same folder and update the `<Assembly>` path if your build path differs.
+3. Restart Revit.
 
 ## Usage
-Open Revit -> Add-Ins tab -> External Tools -> Revit Elements Exporter. The command writes `RevitAllElements.csv` to the current user's Desktop with columns for Id, category, family, type, level, location type, and coordinates (meters). Curves include start/end XYZ columns.
+1. In Revit: Add-Ins → External Tools → Revit Elements Exporter.
+2. Dialog options:
+   - **Format**: CSV / JSON / Excel (.xlsx).
+   - **File path**: default on Desktop; use Browse to change.
+3. Click **Export**. The file is written with coordinates in meters.
+
+## Output Columns
+`Id, Category, Family, Type, Level, LocationType, X, Y, Z, StartX, StartY, StartZ, EndX, EndY, EndZ`
+- `X/Y/Z`: point location (meters) when `LocationType=Point`.
+- `Start*/End*`: curve endpoints (meters) when `LocationType=Curve`; unbounded curves get `Curve-Unbound`.
 
 ## Development Notes
-- API references are marked `Private=false` to rely on Revit-installed assemblies; ensure the hint paths match your Revit version if you upgrade/downgrade.
-- Keep coordinate conversions centralized via the `FeetToMeters` constant in `ExportCoordinates.cs`.
-- If you add tests, create a sibling test project and mock Revit API calls instead of loading the real DLLs.
+- Coordinate conversion uses the `FeetToMeters` constant in `ExportCoordinates.cs`.
+- UI lives in `ExportWindow.xaml` with shared styles under `Themes/`.
+- Excel export uses `DocumentFormat.OpenXml` (3.1.0); no interop dependency.
+- Revit API references are `Private=false` to rely on installed binaries; adjust hint paths if your Revit version changes.
+- If adding tests, create a sibling test project and mock Revit API calls (do not load real Revit assemblies in tests).
