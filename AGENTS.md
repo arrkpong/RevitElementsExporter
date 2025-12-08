@@ -1,33 +1,119 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Solution: `RevitElementsExporter.sln`.
-- Add-in project: `RevitElementsExporter/` contains `RevitElementsExporter.csproj` and the main command `ExportCoordinates.cs`.
-- Build outputs: `RevitElementsExporter/bin/` and `obj/` (generated).
-- Revit add-in manifest: `RevitElementsExporter/.addin` (copy/deploy into Revit add-ins folder when distributing).
+
+```
+RevitXYZExporter/
+├── RevitElementsExporter.sln          # Solution file
+├── Deploy.ps1                         # Deployment script
+├── README.md / README.th.md           # Documentation
+│
+├── RevitElementsExporter/             # Main add-in project
+│   ├── RevitElementsExporter.csproj
+│   ├── .addin                         # Revit manifest
+│   ├── ElementsExporter.cs            # Main IExternalCommand
+│   ├── ExportFormat.cs                # Export format enum
+│   ├── ExportWindow.xaml/.cs          # WPF dialog
+│   ├── Models/
+│   │   └── ExportModels.cs            # Data models (ElementExportRow, CategoryInfo, ExportStats)
+│   ├── Services/
+│   │   └── ExportService.cs           # Pure export logic (testable, no Revit deps)
+│   └── Themes/
+│       ├── Colors.xaml                # Light mode palette
+│       ├── ColorsDark.xaml            # Dark mode palette
+│       └── Styles.xaml                # Control styles
+│
+└── RevitElementsExporter.Tests/       # Unit test project
+    ├── RevitElementsExporter.Tests.csproj
+    └── ExportServiceTests.cs          # Tests for ExportService
+```
 
 ## Build, Test, and Development Commands
-- `dotnet build`: restores packages and compiles the add-in for `net8.0-windows` with WPF support. Run from repo root.
-- `dotnet restore`: fetches dependencies if you need to prime the cache.
-- Tests: none currently defined; add under a sibling test project if needed.
+
+```powershell
+# Build (Debug)
+dotnet build
+
+# Build (Release)
+dotnet build -c Release
+
+# Run tests
+dotnet test
+
+# Deploy to Revit
+.\Deploy.ps1                           # Debug build
+.\Deploy.ps1 -Configuration Release    # Release build
+```
 
 ## Coding Style & Naming Conventions
-- Language: C# 12, nullable enabled, implicit usings on.
-- Indentation: 4 spaces; braces on new lines (C# default style).
-- Naming: PascalCase for classes/methods/properties, camelCase for locals/parameters, `_camelCase` for private fields if added.
-- CSV handling: use `EscapeCsv` helper patterns already in `ExportCoordinates.cs`; prefer `StringBuilder` for aggregation.
-- Units: store Revit feet; convert to meters with the existing `FeetToMeters` constant for outputs.
+
+- **Language**: C# 12, nullable enabled, implicit usings on
+- **Indentation**: 4 spaces; braces on new lines
+- **Naming**:
+  - `PascalCase` for classes/methods/properties
+  - `camelCase` for locals/parameters
+  - `_camelCase` for private fields
+- **CSV handling**: use `ExportService.EscapeCsv()` helper
+- **Units**: Revit uses feet internally; convert to meters with `ExportService.FeetToMeters`
+
+## Architecture
+
+### Separation of Concerns
+
+- **ElementsExporter.cs**: Revit API integration only - collects data from Document
+- **ExportService.cs**: Pure C# logic - formatting, exporting, filtering (fully testable)
+- **Models/**: Data transfer objects - no dependencies
+- **ExportWindow**: WPF UI - handles user interaction
+
+### Testability
+
+- `ExportService` is static and has no Revit dependencies
+- All helper methods are public for unit testing
+- Tests link source files directly (no project reference to avoid Revit API)
 
 ## Testing Guidelines
-- Add unit tests with xUnit or NUnit in a separate test project (e.g., `RevitElementsExporter.Tests`) and target the same framework.
-- Mock Revit API calls; avoid loading real `RevitAPI.dll` in unit tests. Extract logic to pure functions where possible.
-- Name tests with clear intent (e.g., `Exports_PointLocation_WithMeters`).
+
+- Test project: `RevitElementsExporter.Tests` (xUnit)
+- Target framework: `net8.0-windows`
+- Tests cover:
+  - `FormatNullable()` - null handling
+  - `EscapeCsv()` - comma and quote escaping
+  - `CalculateStats()` - statistics calculation
+  - `FilterByCategories()` - category filtering
+  - `GetCategorySummary()` - category grouping
+
+Run tests:
+
+```powershell
+dotnet test
+```
 
 ## Commit & Pull Request Guidelines
-- Commits: write concise, imperative summaries (e.g., "Add XYZ export for curve elements"). Group related changes together.
-- PRs: include what changed, why, and how to validate (commands run, expected outputs). Link related issue/task. Add screenshots only if UI changes occur (unlikely here).
 
-## Build/Runtime Environment Tips
-- Target framework: `net8.0-windows`; platform target: `x64` to match Revit 2026 API binaries.
-- External references: ensure local paths to `RevitAPI.dll` and `RevitAPIUI.dll` match your Revit installation (default `C:\Program Files\Autodesk\Revit 2026\`).
-- Deployment: copy the built assembly and `.addin` manifest into `%AppData%\Autodesk\Revit\Addins\2026\` (or the version you target). Restart Revit to load changes.
+- **Commits**: concise, imperative (e.g., "Add category filter to export dialog")
+- **PRs**: describe what/why/how, include test results
+- **Breaking changes**: document in PR description
+
+## Build/Runtime Environment
+
+- **Framework**: `net8.0-windows` (x64)
+- **Revit version**: 2026
+- **References**: `RevitAPI.dll`, `RevitAPIUI.dll` from `C:\Program Files\Autodesk\Revit 2026\`
+- **Dependencies**: `DocumentFormat.OpenXml` 3.1.0
+
+## Deployment
+
+Use the deploy script:
+
+```powershell
+.\Deploy.ps1 -Configuration Release -RevitVersion 2026
+```
+
+Or manually copy to: `%AppData%\Autodesk\Revit\Addins\2026\`
+
+Files needed:
+
+- `RevitElementsExporter.dll`
+- `DocumentFormat.OpenXml.dll`
+- `DocumentFormat.OpenXml.Framework.dll`
+- `RevitElementsExporter.addin`

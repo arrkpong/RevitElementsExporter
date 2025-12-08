@@ -4,11 +4,11 @@
 		<Name>Revit Elements Exporter</Name>
 		<Assembly>D:\code\Visual Studio\RevitXYZExporter\RevitElementsExporter\bin\Debug\net8.0-windows\RevitElementsExporter.dll</Assembly>
 		<AddInId>1A78401D-2894-4F29-B49D-F847C362EFAA</AddInId>
-		<FullClassName>RevitElementsExporter.ExportCoordinates</FullClassName>
-		<Text>Export Elements to CSV</Text>
-		<Description>Export all element coordinates and metadata to CSV</Description>
+		<FullClassName>RevitElementsExporter.ElementsExporter</FullClassName>
+		<Text>Export Elements</Text>
+		<Description>Export all element coordinates and metadata to CSV, JSON, or Excel</Description>
 		<VendorId>MyCompany</VendorId>
-		<VendorDescription>My Custom Exporter</VendorDescription>
+		<VendorDescription>Revit Elements Exporter Add-in</VendorDescription>
 		<VisibilityMode>AlwaysVisible</VisibilityMode>
 	</AddIn>
 </RevitAddIns>
