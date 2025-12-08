@@ -10,6 +10,7 @@ First official release of Revit Elements Exporter!
 - **Category Filter** - Filter elements by category before export
 - **Stats Preview** - View element counts before exporting
 - **Progress Bar** - Track export progress
+- **Resizable Window** - Adjust window size as needed
 
 ## 📊 Export Data
 
@@ -27,16 +28,18 @@ Each element exports with:
 
 ## 📥 Installation
 
-1. Download the release files
-2. Extract to `%AppData%\Autodesk\Revit\Addins\2026\`
+1. Download `RevitElementsExporter-v1.0.0.zip`
+2. Extract all files to `%AppData%\Autodesk\Revit\Addins\2026\`
 3. Restart Revit
 4. Find in: **Add-Ins → External Tools → Export Elements**
 
-## 📝 What's New
+## 📦 What's Included
 
-- Modern UI with gradient headers and icons
-- Dark mode support
-- Category filter for selective export
-- Real-time element stats preview
-- Resizable window
-- Unit tests included
+- `RevitElementsExporter.dll` - Main add-in
+- `DocumentFormat.OpenXml.dll` - Excel support
+- `DocumentFormat.OpenXml.Framework.dll` - Excel support
+- `RevitElementsExporter.addin` - Revit manifest
+
+## 🌙 Dark Mode
+
+Click the moon icon (🌙) in the header to switch to Dark Mode!
