@@ -233,13 +233,13 @@
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-              <Button Content="ทั้งหมด"
+              <Button x:Name="SelectAllBtn" Content="ทั้งหมด"
                       Style="{StaticResource SecondaryButton}"
                       Padding="8,4"
                       Margin="0,0,4,0"
                       FontSize="11"
                       Click="OnSelectAllClick" />
-              <Button Content="ไม่เลือก"
+              <Button x:Name="SelectNoneBtn" Content="ไม่เลือก"
                       Style="{StaticResource SecondaryButton}"
                       Padding="8,4"
                       Margin="0"
@@ -247,9 +247,11 @@
                       Click="OnSelectNoneClick" />
             </StackPanel>
             
-            <Border BorderBrush="{StaticResource BorderBrushLight}" 
+            <Border x:Name="CategoryListBorder" 
+                    BorderBrush="{StaticResource BorderBrushLight}" 
                     BorderThickness="1" 
                     CornerRadius="8"
+                    Background="White"
                     MaxHeight="260">
               <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="CategoryList" Padding="8">

@@ -199,6 +199,9 @@ namespace RevitElementsExporter
                 // Dark mode - text colors
                 var lightText = new SolidColorBrush(Color.FromRgb(241, 245, 249)); // #F1F5F9
                 var mutedText = new SolidColorBrush(Color.FromRgb(148, 163, 184)); // #94A3B8
+                var darkBg = new SolidColorBrush(Color.FromRgb(15, 23, 42));
+                var cardBg = new SolidColorBrush(Color.FromRgb(30, 41, 59));
+                var borderColor = new SolidColorBrush(Color.FromRgb(51, 65, 85));
                 
                 FormatLabel.Foreground = lightText;
                 FilePathLabel.Foreground = lightText;
@@ -206,13 +209,25 @@ namespace RevitElementsExporter
                 SelectedCategoryText.Foreground = mutedText;
                 
                 // TextBox and ComboBox
-                FilePathBox.Background = new SolidColorBrush(Color.FromRgb(15, 23, 42));
+                FilePathBox.Background = darkBg;
                 FilePathBox.Foreground = lightText;
-                FilePathBox.BorderBrush = new SolidColorBrush(Color.FromRgb(51, 65, 85));
+                FilePathBox.BorderBrush = borderColor;
                 
-                FormatCombo.Background = new SolidColorBrush(Color.FromRgb(15, 23, 42));
+                FormatCombo.Background = darkBg;
                 FormatCombo.Foreground = lightText;
-                FormatCombo.BorderBrush = new SolidColorBrush(Color.FromRgb(51, 65, 85));
+                FormatCombo.BorderBrush = borderColor;
+                
+                // Category list
+                CategoryListBorder.Background = cardBg;
+                CategoryListBorder.BorderBrush = borderColor;
+                
+                // Buttons
+                SelectAllBtn.Background = cardBg;
+                SelectAllBtn.Foreground = lightText;
+                SelectAllBtn.BorderBrush = borderColor;
+                SelectNoneBtn.Background = cardBg;
+                SelectNoneBtn.Foreground = lightText;
+                SelectNoneBtn.BorderBrush = borderColor;
             }
             else
             {
@@ -228,6 +243,7 @@ namespace RevitElementsExporter
                 // Light mode - text colors
                 var darkText = new SolidColorBrush(Color.FromRgb(30, 41, 59)); // #1E293B
                 var mutedText = new SolidColorBrush(Color.FromRgb(100, 116, 139)); // #64748B
+                var borderColor = new SolidColorBrush(Color.FromRgb(226, 232, 240));
                 
                 FormatLabel.Foreground = darkText;
                 FilePathLabel.Foreground = darkText;
@@ -237,11 +253,23 @@ namespace RevitElementsExporter
                 // TextBox and ComboBox
                 FilePathBox.Background = Brushes.White;
                 FilePathBox.Foreground = darkText;
-                FilePathBox.BorderBrush = new SolidColorBrush(Color.FromRgb(226, 232, 240));
+                FilePathBox.BorderBrush = borderColor;
                 
                 FormatCombo.Background = Brushes.White;
                 FormatCombo.Foreground = darkText;
-                FormatCombo.BorderBrush = new SolidColorBrush(Color.FromRgb(226, 232, 240));
+                FormatCombo.BorderBrush = borderColor;
+                
+                // Category list
+                CategoryListBorder.Background = Brushes.White;
+                CategoryListBorder.BorderBrush = borderColor;
+                
+                // Buttons
+                SelectAllBtn.Background = Brushes.White;
+                SelectAllBtn.Foreground = darkText;
+                SelectAllBtn.BorderBrush = borderColor;
+                SelectNoneBtn.Background = Brushes.White;
+                SelectNoneBtn.Foreground = darkText;
+                SelectNoneBtn.BorderBrush = borderColor;
             }
         }
 
