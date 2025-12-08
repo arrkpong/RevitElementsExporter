@@ -89,6 +89,7 @@ namespace RevitElementsExporter
             var dialog = new SaveFileDialog
             {
                 Filter = "CSV files (*.csv)|*.csv|JSON files (*.json)|*.json|Excel Workbook (*.xlsx)|*.xlsx",
+                FilterIndex = FormatCombo.SelectedIndex + 1, // Sync with format selection
                 FileName = Path.GetFileName(FilePathBox.Text),
                 InitialDirectory = initialDirectory
             };
@@ -96,6 +97,14 @@ namespace RevitElementsExporter
             if (dialog.ShowDialog() == true)
             {
                 FilePathBox.Text = dialog.FileName;
+                // Update format based on file extension
+                string ext = Path.GetExtension(dialog.FileName).ToLowerInvariant();
+                FormatCombo.SelectedIndex = ext switch
+                {
+                    ".json" => 1,
+                    ".xlsx" => 2,
+                    _ => 0
+                };
             }
         }
 

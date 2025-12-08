@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>Revit Elements Exporter</Name>
+		<Assembly>RevitElementsExporter.dll</Assembly>
+		<AddInId>1A78401D-2894-4F29-B49D-F847C362EFAA</AddInId>
+		<FullClassName>RevitElementsExporter.ElementsExporter</FullClassName>
+		<Text>Export Elements</Text>
+		<Description>Export all element coordinates and metadata to CSV, JSON, or Excel</Description>
+		<VendorId>MyCompany</VendorId>
+		<VendorDescription>Revit Elements Exporter Add-in</VendorDescription>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+	</AddIn>
+</RevitAddIns>

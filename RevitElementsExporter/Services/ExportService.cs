@@ -33,20 +33,20 @@ namespace RevitElementsExporter.Services
 
             foreach (ElementExportRow row in rowList)
             {
-                csvData.AppendLine(string.Join(", ",
+                csvData.AppendLine(string.Join(",",
                     EscapeCsv(row.Id),
                     EscapeCsv(row.Category),
                     EscapeCsv(row.Family),
                     EscapeCsv(row.Type),
                     EscapeCsv(row.Level),
-                    row.LocationType,
+                    EscapeCsv(row.LocationType),
                     FormatNullable(row.X), FormatNullable(row.Y), FormatNullable(row.Z),
                     FormatNullable(row.StartX), FormatNullable(row.StartY), FormatNullable(row.StartZ),
                     FormatNullable(row.EndX), FormatNullable(row.EndY), FormatNullable(row.EndZ)
                 ));
 
                 current++;
-                if (current % 100 == 0)
+                if (total > 0 && current % 100 == 0)
                 {
                     progress?.Report((int)((double)current / total * 100));
                 }
@@ -125,7 +125,7 @@ namespace RevitElementsExporter.Services
                 sheetData.AppendChild(CreateRow(cells));
 
                 current++;
-                if (current % 100 == 0)
+                if (total > 0 && current % 100 == 0)
                 {
                     progress?.Report((int)((double)current / total * 100));
                 }
@@ -191,7 +191,8 @@ namespace RevitElementsExporter.Services
                 return string.Empty;
             }
 
-            if (input.Contains(',') || input.Contains('"'))
+            // Check for characters that require quoting: comma, quote, newline, carriage return
+            if (input.Contains(',') || input.Contains('"') || input.Contains('\n') || input.Contains('\r'))
             {
                 return "\"" + input.Replace("\"", "\"\"") + "\"";
             }
