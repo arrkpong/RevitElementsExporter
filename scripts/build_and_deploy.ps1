@@ -27,21 +27,29 @@ Write-Host "Revit Version: $RevitVersion" -ForegroundColor Yellow
 Write-Host ""
 
 # === 2. Build Solution ===
-Write-Host "[1/4] Building Solution..." -ForegroundColor White
+Write-Host "[1/5] Building Solution..." -ForegroundColor White
 dotnet build "$SolutionDir\RevitElementsExporter.sln" --configuration $Configuration
 
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Build Failed. Aborting deployment."
 }
 
-# === 3. Create Target Directory ===
+# === 3. Run Tests ===
+Write-Host "[2/5] Running Tests..." -ForegroundColor White
+dotnet test "$SolutionDir\RevitElementsExporter.sln" --configuration $Configuration
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Tests Failed. Aborting deployment."
+}
+
+# === 4. Create Target Directory ===
 if (-not (Test-Path $AddinFolder)) {
     Write-Host "Creating Addins folder: $AddinFolder" -ForegroundColor Yellow
     New-Item -ItemType Directory -Force -Path $AddinFolder | Out-Null
 }
 
-# === 4. Copy Files ===
-Write-Host "[2/4] Deploying DLL..." -ForegroundColor White
+# === 5. Copy Files ===
+Write-Host "[3/5] Deploying DLL..." -ForegroundColor White
 
 # Copy DLL
 $DllPath = "$BuildOutput\RevitElementsExporter.dll"
@@ -54,7 +62,7 @@ else {
 }
 
 # Copy Dependencies
-Write-Host "[3/4] Copying dependencies..." -ForegroundColor White
+Write-Host "[4/5] Copying dependencies..." -ForegroundColor White
 $Dependencies = @(
     "DocumentFormat.OpenXml.dll",
     "DocumentFormat.OpenXml.Framework.dll"
@@ -67,8 +75,8 @@ foreach ($dep in $Dependencies) {
     }
 }
 
-# === 5. Generate Manifest (.addin) ===
-Write-Host "[4/4] Generating Manifest..." -ForegroundColor White
+# === 6. Generate Manifest (.addin) ===
+Write-Host "[5/5] Generating Manifest..." -ForegroundColor White
 
 # We point to the deployed DLL in the Addins folder
 $AssemblyPath = "$AddinFolder\RevitElementsExporter.dll"
